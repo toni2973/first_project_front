@@ -122,6 +122,19 @@
                 },
                 function(res){
                     if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                        $.ajax({
+                            async: false,
+                            url: "http://hya.s1.natapp.cc/api/orders/paid",
+                            type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                            data:JSON.stringify({"orderid":order_id}),
+                            success: function(data){
+                              alert("支付成功");
+                            },
+                            error:function (data) {
+                                alert(data);
+                            }
+                        })
                         self.location="result.html?orderid="+order_id;
                     }else if(res.err_msg == "get_brand_wcpay_request:cancel" ){
                         alert("请重新购买");

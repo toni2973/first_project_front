@@ -6,7 +6,7 @@
     <script type="text/javascript" src="jquery-2.1.1.js"></script>
 
     <script src="avalon.js"></script>
-    <title>商品列表</title>
+    <title>Avalon Learning Blog</title>
 </head>
 <body>
 <!-- HEADER -->
@@ -19,7 +19,9 @@
     <ul>
         <li ms-repeat="infoList">
             <div align="center">
-                <div>{{el.tittle}}</div>      
+                <div>{{el.title}}</div>
+                <!--<div align="center"><img ms-attr-src="el.pic"  onclick="javascript:location.href='介绍.html#xigua'"/>/></div>-->
+                <!--<div align="center"><img ms-attr-src="el.pic"/></div>-->
                 <a ms-href="http://hya.s1.natapp.cc/detail.html?id={{el.id}}" > <img ms-attr-src="el.pic" /></a>
                 <!--<div align="center"><img ms-attr-src="el.pic" onclick=""/></div>-->
                 <div>{{el.description}}</div>
