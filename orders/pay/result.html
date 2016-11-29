@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<link rel="stylesheet" type="text/css" href="test.css">-->
+    <script type="text/javascript" src="jquery-2.1.1.js"></script>
+    <script src="avalon.js"></script>
+    <title>订单详情</title>
+    <style>
+        .item-place{ float:left;width:50%}
+        .item-price{ float:left;width:50%}
+        .desc{ float:left;width: 50%;height: 100px}
+    </style>
+</head>
+<body>
+<div class="head">
+    <h1 class="ui header">订单详情
+    </h1>
+</div>
+<div >
+    <div align="center" ms-controller="user" name="user">
+        用户：{{user.nickname}}
+    </div>
+    <div  align="center" ms-controller="order" name="order">
+        <div>订单状态：{{order.state|state}}</div>
+        <div>地址：{{order.address}} </div>
+        <div>总价：{{order.totalPrice}}</div>
+        <div>订单时间：{{order.order_time|time}}</div>
+        <div>订单编号：hya{{order.id}}</div>
+    </div>
+    <div ms-controller="list">
+        <ul>
+            <li ms-repeat="infoList">
+                <div align="center">
+                    <img ms-attr-src="el.pic"height=100px width=100px />
+                    <div class="desc"><table border="0">
+                        <tr class="title"><td>商品：{{el.title}}</td></tr>
+                        <tr class="quantity"><td>数量：{{el.quantity}}</td></tr>
+                        <tr class="price"><td>价格：{{el.price}}</td></tr>
+                    </table>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<script>
+    var id=getUrlParam("orderid");
+    avalon.filters.state = function(str){
+        /* 具体逻辑 */
+        if (str==1) return "未支付"; else return "已支付";
+    }
+    avalon.filters.time = function(str){
+        /* 具体逻辑 */
+        return format(str,'yyyy-MM-dd HH:mm:ss');
+    }
+    var model=avalon.define("list",function (vm) {
+        vm.infoList={};
+    })
+    var model2=avalon.define("order",function (vm) {
+        vm.order={};
+    });
+    var model3=avalon.define("user",function (vm) {
+        vm.user={};
+    })
+    $.ajax({
+        type:"GET",
+        url:"http://hya.s1.natapp.cc/api/orders/get?id="+id,
+        success:function (data) {
+            console.log(data);
+            model.infoList=data.orderDetailList;
+            model2.order=data.order;
+            model3.user=data.user;
+        },
+        error:function (data) {
+            console.log(data);
+        }
+    });
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg); //匹配目标参数
+        if (r != null) return unescape(r[2]); return null; //返回参数值
+    }
+    var format = function(time, format){
+        var t = new Date(time);
+        var tf = function(i){return (i < 10 ? '0' : '') + i};
+        return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function(a){
+            switch(a){
+                case 'yyyy':
+                    return tf(t.getFullYear());
+                    break;
+                case 'MM':
+                    return tf(t.getMonth() + 1);
+                    break;
+                case 'mm':
+                    return tf(t.getMinutes());
+                    break;
+                case 'dd':
+                    return tf(t.getDate());
+                    break;
+                case 'HH':
+                    return tf(t.getHours());
+                    break;
+                case 'ss':
+                    return tf(t.getSeconds());
+                    break;
+            }
+        })
+    }
+</script>
+</body>
+</html>

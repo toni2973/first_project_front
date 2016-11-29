@@ -1,0 +1,110 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="jquery-2.1.1.js"></script>
+
+    <script src="avalon.js"></script>
+    <title>商品列表</title>
+</head>
+<body>
+<!-- HEADER -->
+<div class="head">
+    <h1 class="ui header">商品列表
+    </h1>
+</div>
+
+<div ms-controller="list">
+    <ul>
+        <li ms-repeat="infoList">
+            <div align="center">
+                <div>{{el.tittle}}</div>      
+                <a ms-href="http://hya.s1.natapp.cc/detail.html?id={{el.id}}" > <img ms-attr-src="el.pic" /></a>
+                <!--<div align="center"><img ms-attr-src="el.pic" onclick=""/></div>-->
+                <div>{{el.description}}</div>
+            </div>
+        </li>
+    </ul>
+</div>
+
+
+<script type="text/javascript">
+
+
+    var model2 = avalon.define("list",function(vm){
+        vm.infoList={}; //infoList缺省值为JSONlist数据
+    });
+
+    $.ajax({
+        type:"get",
+        url:"http://hya.s1.natapp.cc/api/products",
+        success:function (data) {
+            model2.infoList = data;
+
+            //调用成功
+        },
+        error: function(data, textStatus, errorThrown) {
+            //调用失败
+            console.log(data);
+        }
+
+    });
+    CODE=getUrlParam("code");
+    $.ajax({
+        type : "get",
+        url:"http://hya.s1.natapp.cc/api/users/vali/"+CODE,
+        success : function(data){
+
+            setCookie("openid",data.openid,7200*1000);
+            setCookie("access_token",data.access_token,7200*1000);
+            setCookie("userid",data.userid,7200*1000);
+            console.log(getCookie("userid"));
+            console.log(getCookie("openid"));
+        },error:function(data){
+            console.log(data);
+            alert("连接失败！");
+        }
+    });
+
+
+
+    avalon.scan();
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg); //匹配目标参数
+        if (r != null) return unescape(r[2]); return null; //返回参数值
+    }
+    function setCookie(name,value,time)
+    {
+        var Days = 30;function setCookie(name,value)
+    {
+        var Days = 30;
+        var exp = new Date();
+        exp.setTime(exp.getTime() + time);
+        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+    }
+        function getCookie(name)
+        {
+            var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+            if(arr=document.cookie.match(reg))
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+        var exp = new Date();
+        exp.setTime(exp.getTime() + Days*24*60*60*1000);
+        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+    }
+    function getCookie(name)
+    {
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]);
+        else
+            return null;
+    }
+</script>
+</body>
+</html>
+

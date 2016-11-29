@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<link rel="stylesheet" type="text/css" href="test.css">-->
+    <script type="text/javascript" src="jquery-2.1.1.js"></script>
+    <script src="avalon.js"></script>
+    <title>商品详情</title>
+    <style>
+        .item-place{ float:left;width:50%}
+        .item-price{ float:left;width:50%}
+    </style>
+</head>
+<body>
+<script>
+console.log(getUrlParam("return_code"));
+function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg); //匹配目标参数
+        if (r != null) return unescape(r[2]); return null; //返回参数值
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<link rel="stylesheet" type="text/css" href="test.css">-->
+    <script type="text/javascript" src="jquery-2.1.1.js"></script>
+    <script src="avalon.js"></script>
+    <title>商品详情</title>
+    <style>
+        .item-place{ float:left;width:50%}
+        .item-price{ float:left;width:50%}
+    </style>
+</head>
+<body>
+<div class="head">
+    <div align="center"> <h1 class="ui header">商品详情</h1></div>
+    <div align="center" ms-controller="product"><img ms-attr-src="product.pic"/>
+        <section id="place-price" class="g-sec">
+            <div class="item-place">{{product.place}}</div>
+            <div class="item-price">￥{{product.price|number(2)}}</div>
+        </section>
+        <section id="title-desc" class="g-sec">
+            <div class="item-title">{{product.title}}</div>
+            <div class="item-desc">{{product.description}}</div>
+        </section>
+        <section id="purcharse" class="g-sec">
+            <div class="item-title">{{product.freemail|freemail}}</div>
+            <!--<div class="item-desc">{{product.}}</div>-->
+            <!--ms-if-->
+        </section>
+        <section>
+            <button type="button" onclick=buy()>购买
+            </button>
+
+        </section>
+    </div>
+
+</div>
+<script type="text/javascript">
+    var id=getUrlParam("id");
+    avalon.filters.freemail = function(str){//str为管道符之前计算得到的结果，默认框架会帮你传入，此方法必须返回一个值
+        /* 具体逻辑 */
+        if (str==true) return "包邮"; else return "";
+    }
+    var model=avalon.define("product",function(vm){
+        vm.product={};
+    });
+    $.ajax({
+        type:"get",
+        url:"http://hya.s1.natapp.cc/api/products/"+id,
+        success:function (data) {
+            model.product = data;
+
+            //调用成功
+        },
+        error: function(data, textStatus, errorThrown){
+            //调用失败
+            console.log(data);
+        }
+
+    });
+    function buy() {
+        setCookie("product_num","1");
+        setCookie("id",id);
+        var userid=getCookie("userid");
+console.log(userid);
+        if (userid==null)
+            self.location='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe1b0f22089fadce1&redirect_uri=http://hya.s1.natapp.cc&response_type=code&scope=snsapi_base#wechat_redirect';
+        else{
+            self.location='/orders/pay/order.html';
+        }
+    }
+
+
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg); //匹配目标参数
+        if (r != null) return unescape(r[2]); return null; //返回参数值
+    }
+
+    function setCookie(name,value)
+    {
+        var Days = 30;
+        var exp = new Date();
+        exp.setTime(exp.getTime() + Days*24*60*60*1000);
+        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+    }
+    function getCookie(name)
+    {
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]);
+        else
+            return null;
+    }
+    function delCookie(name)
+    {
+        var exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        var cval=getCookie(name);
+        if(cval!=null)
+            document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+    }
+</script>
+</body>
+</html>

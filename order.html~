@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="jquery-2.1.1.js"></script>
+
+    <script src="avalon.js"></script>
+    <title>订单</title>
+    <style>
+        .pic{ float:left;width:50%}
+        .desc{ float:left;width: 50%;height: 100px}
+    </style>
+</head>
+<body>
+<div name="pay" >
+    <div align="center" ms-controller="user" name="user">
+        <div>用户：{{user.username}} </div>
+        地址：<input type="text" id="address" ms-value={{user.address}} />
+    </div>
+
+    <div align="center" ms-controller="product">
+        <div class="pic"><img ms-attr-src="product.pic"height=100px width=100px /></div>
+        <div class="desc"><table border="0">
+            <tr class="title"><td>{{product.title}}</td></tr>
+            <tr class="price"><td>￥{{product.price|number(2)}}</td></tr>
+        </table>
+        </div>
+    </div>
+    <div align="center" ms-controller="order">
+        <table border="0"><tr>总价：￥</tr><tr id="totalPrice">{{order.totalPrice|number(2)}}</tr>
+        </table>
+    </div>
+    <input type="submit" value="提交" onclick="sub()"/>
+</div>
+
+<script>
+
+    var product_num=getCookie("product_num");
+    var product_id=getCookie("id");
+     totalPrice=0;
+    var model=avalon.define("user",function (vm) {
+        vm.user={};
+    });
+    var model2=avalon.define("product",function (vm) {
+        vm.product={};
+    });
+    $.ajax({
+        type:"get",
+        url:"/api/users/"+getCookie("userid"),
+        success:function (data) {
+            model.user = data;
+
+        }
+    })
+    $.ajax({
+        type:"get",
+        url:"/api/products/"+product_id,
+        success:function (data) {
+            model2.product = data;
+            var price=data.price;
+            totalPrice=price*product_num;
+            setCookie("totalPrice",totalPrice);
+            var jsona={
+                "totalPrice":totalPrice
+            };
+            model3.order=jsona;
+
+        },
+        error: function(data, textStatus, errorThrown) {
+
+
+            console.log(data);
+        }
+    })
+    var model3=avalon.define("order",function(vm){
+        vm.order={};
+    });
+
+    //    userid;
+    //    private int productid;
+    //    private String address;
+    //    private int num;
+    //    private int totalPrice;
+
+    function sub(){
+        var order={
+            'address':document.getElementById("address").value,
+            'productid':getCookie("id"),
+            'num':getCookie("product_num"),
+            "userid":getCookie("userid"),
+            "totalPrice":totalPrice
+        };
+        console.log(order);
+console.log(getCookie("userid"));
+        $.ajax({
+                    async: false,
+                    url: "http://hya.s1.natapp.cc/api/orders",
+                    type: "POST",
+                    data:JSON.stringify(order),
+
+                    contentType: "application/json; charset=utf-8",
+                    success: function(responseText){
+
+                    },
+                    error:function(responseText){
+                        console.log(responseText);
+                    }
+
+                }
+        );
+
+    }
+    function setCookie(name,value)
+    {
+        var Days = 30;
+        var exp = new Date();
+        exp.setTime(exp.getTime() + Days*24*60*60*1000);
+        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+    }
+    function getCookie(name)
+    {
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]);
+        else
+            return null;
+    }
+    function delCookie(name)
+    {
+        var exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        var cval=getCookie(name);
+        if(cval!=null)
+            document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+    }
+</script>
+</body>
+</html>
