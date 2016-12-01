@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset='utf-8'/>
+    <title>spinner demo 1</title>
+    <script src='avalon.js'></script>
+</head>
+<body>
+    <div class="demo-show" ms-controller="pager">
+        <fieldset>
+            <legend>基本的spinner</legend>
+            <input ms-duplex="p" ms-widget="spinner" id="test"/>
+        </fieldset>
+        <fieldset>
+            <legend>有范围限制的spinner,最小0,最大5</legend>
+                <input ms-duplex="p1" ms-widget="spinner, $spinner, $spinnerOpts" />
+        </fieldset>
+        <fieldset>
+            <legend>步长为0.5的spinner</legend>
+                <input ms-duplex="p2" ms-widget="spinner, $step, $stepOpts"/>
+        </fieldset>
+        <script>
+            require(["spinner/avalon.spinner"], function(avalon) {
+                var pager = avalon.define('pager', function(vm) {
+                    vm.p = "8";
+                    vm.p1 = 2;
+                    vm.p2 = 1.0;
+                    vm.$spinnerOpts = {
+                        min: 0,
+                        max: 5
+                    }
+                    vm.$stepOpts = {
+                        step: 0.5
+                    }
+                });
+                avalon.scan();
+            })
+        </script>
+    </div>
+</body>
+</html>
+

@@ -2,19 +2,90 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <!--<link rel="stylesheet" type="text/css" href="test.css">-->
     <script type="text/javascript" src="jquery-2.1.1.js"></script>
     <script src="avalon.js"></script>
     <title>商品详情</title>
     <style>
+
+.pin-spinner-2 {
+    display: none;
+    position: fixed;
+    width: 66px;
+    height: 66px;
+    left: 50%;
+    top: 35%;
+    margin-left: -33px;
+    z-index: 999999999;
+}
+.ps-inner-box {
+    width: 100%;
+    height: 100%;
+    display: -webkit-flex;
+    justify-content: center;
+    -webkit-justify-content: center;
+    align-items: center;
+    -webkit-align-items: center;
+}
+.ps-rotate-img {
+    width:  25px;
+    height: 25px;
+    animation: rotateImg 2.5s linear infinite;
+    -webkit-animation: rotateImg 2.5s linear infinite;
+    z-index: 9999999999;
+}
+#ps-background {
+    display: none;
+    position: fixed;
+    width: 66px;
+    height: 66px;
+    left: 50%;
+    top: 35%;
+    margin-left: -33px;
+    opacity: 0.7;
+    background-color: #000;
+    border-radius: 9px;
+}
+.kt{position:fixed;width:100%;max-width:640px;z-index:8888;padding:0;bottom:0;background-color:#fff;font-size:12px;height:50px}
+@keyframes rotateImg {
+    0% {
+        transform: rotateZ(0deg);
+    }
+    50% {
+        transform: rotateZ(180deg);
+    }
+    100% {
+        transform: rotateZ(360deg);
+    }
+}
+
+@-webkit-keyframes rotateImg {
+    0% {
+        -webkit-transform: rotateZ(0deg);
+    }
+    50% {
+        -webkit-transform: rotateZ(180deg);
+    }
+    100% {
+        -webkit-transform: rotateZ(360deg);
+    }
+}
+
         .item-place{ float:left;width:50%}
         .item-price{ float:left;width:50%}
+        .item-desc{padding-top:5px;eight:20px;font-size:14px;color:#666}
+        .item-title{display:-webkit-box;overflow:hidden;text-overflow:ellipsis;font-weight:700;font-size:15px;color:#1a1a1a;clear:both;word-break:break-all;word-wrap:break-word;-webkit-line-clamp:2;-webkit-box-orient:vertical;letter-spacing:1px}
+        .item-price{position:relative;font-size:22px;line-height:20px;float:left;color:#f95757}
+        .buy{background-color:#fe243d;color:#fe243d;float:right;width:36%;height:100%;overflow:hidden;position:relative;text-align:center}
+
     </style>
 </head>
 <body>
-<div class="head">
+<div class="head" style="visibility: visible;">
     <div align="center"> <h1 class="ui header">商品详情</h1></div>
-    <div align="center" ms-controller="product"><img ms-attr-src="product.pic"/>
+    <div align="center" ms-controller="product" style='height: 400px; touch-action: pan-y; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);'>
+<img ms-attr-src="product.pic" height="200" width="300" />
         <section id="place-price" class="g-sec">
             <div class="item-place">{{product.place}}</div>
             <div class="item-price">￥{{product.price|number(2)}}</div>
@@ -24,15 +95,14 @@
             <div class="item-desc">{{product.description}}</div>
         </section>
         <section id="purcharse" class="g-sec">
-            <div class="item-title">{{product.freemail|freemail}}</div>
-            <!--<div class="item-desc">{{product.}}</div>-->
-            <!--ms-if-->
+            <div class="item-freemail">{{product.freemail|freemail}}</div>
         </section>
-        <section>
-            <button type="button" onclick=buy()>购买
-            </button>
 
-        </section>
+        <div  align='right'>
+            <button  type="button" onclick=buy() style='font-size: 20px;border:0px;background:red;color:white'>购买  
+
+        </div>
+
     </div>
 
 </div>
@@ -63,7 +133,7 @@
         setCookie("product_num","1");
         setCookie("id",id);
         var userid=getCookie("userid");
-console.log(userid);
+        console.log(userid);
         if (userid==null)
             self.location='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe1b0f22089fadce1&redirect_uri=http://hya.s1.natapp.cc&response_type=code&scope=snsapi_base#wechat_redirect';
         else{

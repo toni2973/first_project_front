@@ -3,22 +3,70 @@
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <script type="text/javascript" src="jquery-2.1.1.js"></script>
-
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <script src="avalon.js"></script>
+    <link rel="stylesheet" href="http://cdn.yangkeduo.com/assets/css/boot_516f56a06a99e736cfd72c163afb1924.css">
+    <link rel="stylesheet" href="http://cdn.yangkeduo.com/assets/css/order_checkout_51fa8d372302021cc59089e6e341d6df.css">
+    <link rel="stylesheet" type="text/css" href="http://sandbox.runjs.cn/uploads/rs/294/c4c2o6mh/base.css">
+    <link rel="stylesheet" type="text/css" href="http://sandbox.runjs.cn/uploads/rs/294/c4c2o6mh/areaSelect.css">
+    <script type="text/javascript" src="http://sandbox.runjs.cn/uploads/rs/294/c4c2o6mh/jquery.js"></script>
+    <script type="text/javascript" src="http://sandbox.runjs.cn/uploads/rs/294/c4c2o6mh/areaSelect.js"></script>
     <title>订单</title>
     <style>
-        .pic{ float:left;width:50%}
-        .desc{ float:left;width: 50%;height: 100px}
+        .pic{ float:left;width:40%}
+        .desc{ float:left;width: 60%;height: 100px}
+        .address{margin:5px}
+        .name{margin:5px}
+        .pay{margin:0px 5% 0px 5%;}
+        .products{background-color: lightgray}
+
+
     </style>
 </head>
 <body>
-<div name="pay" >
-    <div align="center" ms-controller="user" name="user">
-        <div>用户：{{user.nickname}} </div>
-        地址：<input type="text" id="address" ms-value={{user.address|}} />
+<div class="oc-body" >
+
+    <div  ms-controller="user" name="user">
+        <section id="oc-address" class="oc-address" avalonctrl="oc_address">
+            <div class="oc-address-container">
+                <!--ms-if-->
+                <!--ms-if-->
+            </div>
+            <div class="oc-address-info">
+
+        <div class="oc-address-location">
+            <div class="oc-address-location-icon"></div>
+        </div>
+            <div class="oc-address-receiver">
+                <span class="oc-address-receiver-name">用户名：{{user.nickname}}</span>
+
+</div>
+            <div class="oc-address-detail">
+                    <!--ms-if-->地址：
+                    <input id="consignoraddress"  data-action="4" type="text">
+                    <div id="consignoraAddr" class="area-tab"></div>
+
+                </div>
+                <div class="oc-address-right-arrow">
+                    <div class="oc-address-right-arrow-icon"></div>
+                </div>
+
+            </div>
+
+
+
+
+
+        </section>
     </div>
 
-    <div align="center" ms-controller="product">
+
+
+
+
+
+
+    <div align="center" ms-controller="product" class="products">
         <div class="pic"><img ms-attr-src="product.pic"height=100px width=100px /></div>
         <div class="desc"><table border="0">
             <tr class="title"><td>{{product.title}}</td></tr>
@@ -30,143 +78,132 @@
         <table border="0"><tr>总价：￥</tr><tr id="totalPrice">{{order.totalPrice|number(2)}}</tr>
         </table>
     </div>
-    <input type="submit" value="购买" onclick="sub()"/>
+    <div align='right'>  <button  type="button" onclick="sub() " style='font-size: 20px;border:0px;background:red;color:white'>支付</button></div>
+
 </div>
-
-<script>
-
-    var product_num=getCookie("product_num");
-    var product_id=getCookie("id");
-    totalPrice=0;
-    var model=avalon.define("user",function (vm) {
-        vm.user={};
-    });
-    var model2=avalon.define("product",function (vm) {
-        vm.product={};
-    });
-    $.ajax({
-        type:"get",
-        url:"/api/users/"+getCookie("userid"),
-        success:function (data) {
-            model.user = data;
-            //调用成功
-        }
-    })
-    $.ajax({
-        type:"get",
-        url:"/api/products/"+product_id,
-        success:function (data) {
-            model2.product = data;
-            var price=data.price;
-            totalPrice=price*product_num;
-            setCookie("totalPrice",totalPrice);
-            var jsona={
-                "totalPrice":totalPrice
-            };
-            model3.order=jsona;
-            //调用成功
-        },
-        error: function(data, textStatus, errorThrown) {
-            //调用失败
-
-            console.log(data);
-        }
-    })
-    var model3=avalon.define("order",function(vm){
-        vm.order={};
-    });
-
-    //    userid;
-    //    private int productid;
-    //    private String address;
-    //    private int num;
-    //    private int totalPrice;\
-    order_id;
-    function sub(){
-        var order={
-            'address':document.getElementById("address").value,
-            'productid':getCookie("id"),
-            'num':getCookie("product_num"),
-            "userid":getCookie("userid"),
-            "totalPrice":totalPrice
-        };
-        console.log(order);
-        console.log(getCookie("userid"));
-        $.ajax({
-                    async: false,
-                    url: "http://hya.s1.natapp.cc/api/orders/",
-                    type: "POST",
-                    data:JSON.stringify(order),
-                    contentType: "application/json; charset=utf-8",
-                    success: function(data){
-                        order_id=data.orderid;
-                        onBridgeReady(data);
-                    },
-                    error:function(responseText){
-                        console.log(responseText);
-                    }
-
+        <script>
+            ZXB.AreaQuery.areaSelects.init();
+            var product_num=getCookie("product_num");
+            var product_id=getCookie("id");
+            totalPrice=0;
+            var model=avalon.define("user",function (vm) {
+                vm.user={};
+            });
+            var model2=avalon.define("product",function (vm) {
+                vm.product={};
+            });
+            $.ajax({
+                type:"get",
+                url:"/api/users/"+getCookie("userid"),
+                success:function (data) {
+                    model.user = data;
+                    //调用成功
                 }
-        );
-
-    }
-    function onBridgeReady(data){
-        WeixinJSBridge.invoke(
-                'getBrandWCPayRequest', {
-                    "appId": data.appId,
-                    "timeStamp":data.timeStamp,         //时间戳，自1970年以来的秒数
-                    "nonceStr" : data.nonceStr, //随机串
-                    "package" : data.package,
-                    "signType" : "MD5",         //微信签名方式：
-                    "paySign" :data.paySign
+            })
+            $.ajax({
+                type:"get",
+                url:"/api/products/"+product_id,
+                success:function (data) {
+                    model2.product = data;
+                    var price=data.price;
+                    totalPrice=price*product_num;
+                    setCookie("totalPrice",totalPrice);
+                    var jsona={
+                        "totalPrice":totalPrice
+                    };
+                    model3.order=jsona;
+                    //调用成功
                 },
-                function(res){
-                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                        $.ajax({
-                            async: false,
-                            url: "http://hya.s1.natapp.cc/api/orders/paid",
-                            type: "POST",
-                            data:{"orderid":order_id},
-                            success: function(data){
-                              alert("支付成功");
-                            },
-                            error:function (data) {
-                                alert(data);
-                            }
-                        })
-                        self.location="result.html?orderid="+order_id;
-                    }else if(res.err_msg == "get_brand_wcpay_request:cancel" ){
-                        alert("请重新购买");
-                    }else{
-                        alert(res.err_msg);
-                    }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                error: function(data, textStatus, errorThrown) {
+                    //调用失败
 
+                    console.log(data);
                 }
-        );
-    }
-    function setCookie(name,value)
-    {
-        var Days = 30;
-        var exp = new Date();
-        exp.setTime(exp.getTime() + Days*24*60*60*1000);
-        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
-    }
-    function getCookie(name)
-    {
-        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
-        if(arr=document.cookie.match(reg))
-            return unescape(arr[2]);
-        else
-            return null;
-    }
-    function delCookie(name)
-    {
-        var exp = new Date();
-        exp.setTime(exp.getTime() - 1);
-        var cval=getCookie(name);
-        if(cval!=null)
-            document.cookie= name + "="+cval+";expires="+exp.toGMTString();
-    }
-</script>
+            })
+            var model3=avalon.define("order",function(vm){
+                vm.order={};
+            });
+
+            //    userid;
+            //    private int productid;
+            //    private String address;
+            //    private int num;
+            //    private int totalPrice;\
+            order_id;
+            function sub(){
+                var order={
+                    'address':document.getElementById("consignoraddress").value,
+                    'productid':getCookie("id"),
+                    'num':getCookie("product_num"),
+                    "userid":getCookie("userid"),
+                    "totalPrice":totalPrice
+                };
+                console.log(order);
+                console.log(getCookie("userid"));
+                $.ajax({
+                            async: false,
+                            url: "http://hya.s1.natapp.cc/api/orders/",
+                            type: "POST",
+                            data:JSON.stringify(order),
+                            contentType: "application/json; charset=utf-8",
+                            success: function(data){
+                                order_id=data.orderid;
+                                onBridgeReady(data);
+                            },
+                            error:function(responseText){
+                                console.log(responseText);
+                            }
+
+                        }
+                );
+
+            }
+            function onBridgeReady(data){
+                WeixinJSBridge.invoke(
+                        'getBrandWCPayRequest', {
+                            "appId": data.appId,
+                            "timeStamp":data.timeStamp,         //时间戳，自1970年以来的秒数
+                            "nonceStr" : data.nonceStr, //随机串
+                            "package" : data.package,
+                            "signType" : "MD5",         //微信签名方式：
+                            "paySign" :data.paySign
+                        },
+                        function(res){
+                            if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+alert("支付成功");
+                                self.location="result.html?orderid="+order_id;
+                            }else if(res.err_msg == "get_brand_wcpay_request:cancel" ){
+                                alert("请重新购买");
+                            }else{
+                                alert(res.err_msg);
+                            }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+
+                        }
+                );
+            }
+            function setCookie(name,value)
+            {
+                var Days = 30;
+                var exp = new Date();
+                exp.setTime(exp.getTime() + Days*24*60*60*1000);
+                document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+            }
+            function getCookie(name)
+            {
+                var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+                if(arr=document.cookie.match(reg))
+                    return unescape(arr[2]);
+                else
+                    return null;
+            }
+            function delCookie(name)
+            {
+                var exp = new Date();
+                exp.setTime(exp.getTime() - 1);
+                var cval=getCookie(name);
+                if(cval!=null)
+                    document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+            }
+        </script>
 </body>
 </html>

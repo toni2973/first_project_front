@@ -2,46 +2,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!--<link rel="stylesheet" type="text/css" href="test.css">-->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="stylesheet" href="http://cdn.yangkeduo.com/assets/css/boot_516f56a06a99e736cfd72c163afb1924.css">
+    <link rel="stylesheet" href="http://cdn.yangkeduo.com/assets/css/order_checkout_51fa8d372302021cc59089e6e341d6df.css">
     <script type="text/javascript" src="jquery-2.1.1.js"></script>
     <script src="avalon.js"></script>
     <title>订单详情</title>
     <style>
-        .item-place{ float:left;width:50%}
-        .item-price{ float:left;width:50%}
+
+        .pic{ float:left;width:50%}
         .desc{ float:left;width: 50%;height: 100px}
     </style>
 </head>
 <body>
-<div class="head">
-    <h1 class="ui header">订单详情
-    </h1>
-</div>
-<div >
-    <div align="center" ms-controller="user" name="user">
-        用户：{{user.nickname}}
-    </div>
-    <div  align="center" ms-controller="order" name="order">
-        <div>订单状态：{{order.state|state}}</div>
-        <div>地址：{{order.address}} </div>
-        <div>总价：{{order.totalPrice}}</div>
-        <div>订单时间：{{order.order_time|time}}</div>
-        <div>订单编号：hya{{order.id}}</div>
-    </div>
-    <div ms-controller="list">
-        <ul>
-            <li ms-repeat="infoList">
-                <div align="center">
-                    <img ms-attr-src="el.pic"height=100px width=100px />
-                    <div class="desc"><table border="0">
-                        <tr class="title"><td>商品：{{el.title}}</td></tr>
-                        <tr class="quantity"><td>数量：{{el.quantity}}</td></tr>
-                        <tr class="price"><td>价格：{{el.price}}</td></tr>
-                    </table>
+
+<hr width="20%" />
+<div class="oc-body" style="background-color: white;margin: 10px">
+
+    <div avalonctrl="order_checkout" style="margin: 10px">
+        <div  ms-controller="user" name="user" style="font-size: 14px" class="oc-address-main-info">
+            用户：{{user.nickname}}
+        </div>
+        <div  style="font-size: 14px" ms-controller="order" name="order">
+            <div style="font-size: 14px;color:darksalmon">订单状态：{{order.state|state}}</div>
+            <div style="font-size: 14px">地址：{{order.address}} </div>
+            <div >订单时间：{{order.order_time|time}}</div>
+            <div >订单编号：hya{{order.id}}</div>
+        </div>
+
+
+
+        <div ms-controller="list">
+            <ul>
+                <li ms-repeat="infoList">
+                    <section id="oc-goods" class="oc-goods">
+                    <div class="oc-goods-info">
+                        <img ms-attr-src="el.pic" style="float:left">
+                        <div class="oc-goods-detail" style="float:left;width:110px;background-color: #f8f8f8" >
+                            <span class="oc-goods-name" style="margin: 5px">{{el.title}}</span>
+                            <div class="oc-goods-price" style="margin: 5px">价格：{{el.price}}</div>
+                            <div style="border: 2px"></div>
+                            <div class="oc-goods-price" style="margin: 5px">数量：{{el.quantity}} </div>
+                        </div>
+
+
                     </div>
-                </div>
-            </li>
-        </ul>
+                        </section>
+                    <!---->
+                    <!--<div align="center">-->
+                    <!--<div class='pic'><img ms-attr-src="el.pic"height=100px width=100px /></div>-->
+                    <!--<div class="desc"><table border="0">-->
+                    <!--<tr class="title"><td>商品：{{el.title}}</td></tr>-->
+                    <!--<tr class="quantity"><td>数量：{{el.quantity}}</td></tr>-->
+                    <!--<tr class="price"><td>价格：{{el.price}}</td></tr>-->
+                    <!--</table>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
 <script>

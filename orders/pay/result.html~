@@ -2,26 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!--<link rel="stylesheet" type="text/css" href="test.css">-->
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <script type="text/javascript" src="jquery-2.1.1.js"></script>
     <script src="avalon.js"></script>
     <title>订单详情</title>
     <style>
         .item-place{ float:left;width:50%}
-        .item-price{ float:left;width:50%}
+        .pic{ float:left;width:50%}
         .desc{ float:left;width: 50%;height: 100px}
     </style>
 </head>
 <body>
-<div class="head">
-    <h1 class="ui header">订单详情
+<div class="head" style="visibility: visible;" align="center">
+    <h1 class="ui header" >支付结果
     </h1>
 </div>
-<div >
+<div style='float:center';>
     <div align="center" ms-controller="user" name="user">
         用户：{{user.nickname}}
     </div>
-    <div  align="center" ms-controller="order" name="order">
+    <div   ms-controller="order" name="order">
         <div>订单状态：{{order.state|state}}</div>
         <div>地址：{{order.address}} </div>
         <div>总价：{{order.totalPrice}}</div>
@@ -32,9 +32,9 @@
         <ul>
             <li ms-repeat="infoList">
                 <div align="center">
-                    <img ms-attr-src="el.pic"height=100px width=100px />
+                    <div class='pic'><img ms-attr-src="el.pic"height=100px width=100px /></div>
                     <div class="desc"><table border="0">
-                        <tr class="title"><td>产品：{{el.title}}</td></tr>
+                        <tr class="title"><td>商品：{{el.title}}</td></tr>
                         <tr class="quantity"><td>数量：{{el.quantity}}</td></tr>
                         <tr class="price"><td>价格：{{el.price}}</td></tr>
                     </table>

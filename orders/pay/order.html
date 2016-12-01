@@ -3,46 +3,139 @@
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <script type="text/javascript" src="jquery-2.1.1.js"></script>
-
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <script src="avalon.js"></script>
+    <link rel="stylesheet" href="http://cdn.yangkeduo.com/assets/css/boot_516f56a06a99e736cfd72c163afb1924.css">
+    <link rel="stylesheet" href="http://cdn.yangkeduo.com/assets/css/order_checkout_51fa8d372302021cc59089e6e341d6df.css">
+    <link rel="stylesheet" type="text/css" href="http://sandbox.runjs.cn/uploads/rs/294/c4c2o6mh/base.css">
+    <link rel="stylesheet" type="text/css" href="http://sandbox.runjs.cn/uploads/rs/294/c4c2o6mh/areaSelect.css">
+    <script type="text/javascript" src="http://sandbox.runjs.cn/uploads/rs/294/c4c2o6mh/jquery.js"></script>
+    <script type="text/javascript" src="http://sandbox.runjs.cn/uploads/rs/294/c4c2o6mh/areaSelect.js"></script>
     <title>订单</title>
     <style>
-        .pic{ float:left;width:50%}
-        .desc{ float:left;width: 50%;height: 100px}
+        .pic{ float:left;width:40%}
+        .desc{ float:left;width: 60%;height: 100px}
+        .address{margin:5px}
+        .name{margin:5px}
+        .pay{margin:0px 5% 0px 5%;}
+        .products{background-color: lightgray}
+
+
     </style>
 </head>
 <body>
-<div name="pay" >
-    <div align="center" ms-controller="user" name="user">
-        <div>用户：{{user.nickname}} </div>
-        地址：<input type="text" id="address" ms-value={{user.address|}} />
+<div class="oc-body" >
+
+    <div  ms-controller="user" name="user">
+        <section id="oc-address" class="oc-address" avalonctrl="oc_address">
+            <div class="oc-address-container">
+                <!--ms-if-->
+                <!--ms-if-->
+            </div>
+            <div class="oc-address-info">
+
+                <div class="oc-address-location">
+                    <div class="oc-address-location-icon"></div>
+                </div>
+                <div class="oc-address-main-info">
+                    <div class="oc-address-receiver" style="display: block">
+                        <span class="oc-address-receiver-mobile">用户名：</span>
+                        <span class="oc-address-receiver-name">{{user.nickname}}</span>
+                    </div>
+
+                    <div class="oc-address-detail">
+                        <!--ms-if-->地址：
+                        <input id="consignoraddress"  data-action="4" type="text">
+                        <div id="consignoraAddr" class="area-tab"></div>
+
+                    </div>
+                </div>
+                <div class="oc-address-right-arrow">
+                    <div class="oc-address-right-arrow-icon"></div>
+                </div>
+
+            </div>
+
+
+
+
+
+        </section>
     </div>
 
-    <div align="center" ms-controller="product">
-        <div class="pic"><img ms-attr-src="product.pic"height=100px width=100px /></div>
-        <div class="desc"><table border="0">
-            <tr class="title"><td>{{product.title}}</td></tr>
-            <tr class="price"><td>￥{{product.price|number(2)}}</td></tr>
-        </table>
+
+
+
+
+
+
+
+    <div align="center" ms-controller="product" class="products">
+
+        <section id="oc-goods" class="oc-goods" avalonctrl="oc_goods">
+
+
+
+
+            <div class="oc-goods-info">
+                <img ms-attr-src="product.pic">
+                <div class="oc-goods-detail">
+                    <span class="oc-goods-name">{{product.title}}</span>
+                    <div class="oc-goods-spec">
+                        <!--repeat193416524444--><!--repeat193416524444:end-->
+                    </div>
+                    <span class="oc-goods-price">
+                        <i>￥</i>{{product.price|number(2)}}<i>/件</i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="oc-goods-number" >
+                <span>购买数量</span>
+                <!--ms-if-->
+                <div class="oc-goods-reduce" onclick="reduce()"></div>
+                <input id="num" class="oc-buy-number" type="number" min="1" value="1">
+                <div class="oc-goods-increase" onclick="add()"></div>
+            </div>
+        </section>
+
+    </div>
+    <div ms-controller="order"><section class="oc-bottom-bar" avalonctrl="oc_bottom_bar">
+        <div class="oc-pay-btn" onclick="sub()">立即支付</div>
+        <div class="oc-pay-btn oc-pay-sub" style="display: none;" >立即支付<br></div>
+        <div class="oc-pay-final">
+            <!--ms-if-->
+            <span>实付款:</span>
+            <span class="oc-final-amount" id="totalPrice">￥{{order.totalPrice}}</span>
+            <span class="oc-free-shipping">免运费</span>
         </div>
+    </section>
     </div>
-    <div align="center" ms-controller="order">
-        <table border="0"><tr>总价：￥</tr><tr id="totalPrice">{{order.totalPrice|number(2)}}</tr>
-        </table>
-    </div>
-    <input type="submit" value="购买" onclick="sub()"/>
+    <!--<div align="center" ms-controller="order">-->
+    <!--<table border="0"><tr>总价：￥</tr><tr id="totalPrice">{{order.totalPrice|number(2)}}</tr>-->
+
+    <!--</table>-->
+    <!--</div>-->
+
+
 </div>
-
 <script>
+    ZXB.AreaQuery.areaSelects.init();
 
-    var product_num=getCookie("product_num");
     var product_id=getCookie("id");
+
+    price=0;order_id=0;
+    product_num=1;
     totalPrice=0;
     var model=avalon.define("user",function (vm) {
         vm.user={};
     });
     var model2=avalon.define("product",function (vm) {
         vm.product={};
+        vm.product.totalPrice=totalPrice;
+    });
+    var model3=avalon.define("order",function(vm){
+        vm.order={};
     });
     $.ajax({
         type:"get",
@@ -52,14 +145,15 @@
             //调用成功
         }
     })
+
     $.ajax({
         type:"get",
         url:"/api/products/"+product_id,
         success:function (data) {
             model2.product = data;
-            var price=data.price;
+            price=data.price;
             totalPrice=price*product_num;
-            setCookie("totalPrice",totalPrice);
+
             var jsona={
                 "totalPrice":totalPrice
             };
@@ -72,21 +166,35 @@
             console.log(data);
         }
     })
-    var model3=avalon.define("order",function(vm){
-        vm.order={};
-    });
+
 
     //    userid;
     //    private int productid;
     //    private String address;
     //    private int num;
     //    private int totalPrice;\
-    order_id;
+
+
+
+    function add() {
+        product_num=parseInt(document.getElementById("num").value)+1;
+        document.getElementById("num").value=product_num;
+        totalPrice=product_num*price;
+        document.getElementById("totalPrice").textContent="￥"+totalPrice;
+    }
+    function reduce() {
+        product_num=parseInt(document.getElementById("num").value);
+        if ((product_num)>1)  product_num=product_num-1;
+        document.getElementById("num").value=product_num;
+        totalPrice=product_num*price;
+        document.getElementById("totalPrice").textContent="￥"+totalPrice;
+    }
     function sub(){
+        product_num=document.getElementById("num").value;
         var order={
-            'address':document.getElementById("address").value,
+            'address':document.getElementById("consignoraddress").value,
             'productid':getCookie("id"),
-            'num':getCookie("product_num"),
+            'num':document.getElementById("num").value,
             "userid":getCookie("userid"),
             "totalPrice":totalPrice
         };
@@ -122,19 +230,7 @@
                 },
                 function(res){
                     if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                        $.ajax({
-                            async: false,
-                            url: "http://hya.s1.natapp.cc/api/orders/paid",
-                            type: "POST",
-                    contentType: "application/json; charset=utf-8",
-                            data:JSON.stringify({"orderid":order_id}),
-                            success: function(data){
-                              alert("支付成功");
-                            },
-                            error:function (data) {
-                                alert(data);
-                            }
-                        })
+                        alert("支付成功");
                         self.location="result.html?orderid="+order_id;
                     }else if(res.err_msg == "get_brand_wcpay_request:cancel" ){
                         alert("请重新购买");
